@@ -7,10 +7,14 @@ namespace events
         List<BaseObject> objects = new();
         Player player;
         Marker marker;
+        List<GreenCircle> greenCircles = new();
+        Random random = new Random();
 
+        int score = 0;
         public Form1()
         {
             InitializeComponent();
+
             player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
 
             player.OnOverlap += (p, obj) =>
@@ -20,15 +24,47 @@ namespace events
 
             player.OnMarkerOverlap += (m) =>
             {
+
                 objects.Remove(m);
                 marker = null;
             };
 
+            player.OnGreenCircleOverlap += (circle) =>
+            {
+                score += 1;
+                lblScore.Text = $"Очки: {score}";
+                MoveCircle(circle);
+                circle.ResetTimer();
+
+            };
+
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
+            CreateGreenCircles(2);
             objects.Add(marker);
             objects.Add(player);
-            objects.Add(new MyRectangle(50, 50, 0));
-            objects.Add(new MyRectangle(100, 100, 45));
+            objects.AddRange(greenCircles);
+        }
+        private void CreateGreenCircles(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                float x = random.Next(50, pbMain.Width - 50);
+                float y = random.Next(50, pbMain.Height - 50);
+                GreenCircle circle = new GreenCircle(x, y, 0);
+                circle.OnTimeOut += (c) =>
+                {
+                    MoveCircle(c);
+                    c.ResetTimer();
+                };
+                greenCircles.Add(circle);
+            }
+        }
+        private void MoveCircle(GreenCircle circle)
+        {
+            float newX = random.Next(50, pbMain.Width - 50);
+            float newY = random.Next(50, pbMain.Height - 50);
+            circle.X = newX;
+            circle.Y = newY;
         }
 
         private void pbMain_paint(object sender, PaintEventArgs e)
@@ -44,9 +80,9 @@ namespace events
                 {
                     player.Overlap(obj);
                 }
-             }
-            foreach (var obj in objects) 
-            { 
+            }
+            foreach (var obj in objects)
+            {
                 g.Transform = obj.GetTransform();
                 obj.Render(g);
             }
@@ -76,6 +112,9 @@ namespace events
             player.vY += -player.vY * 0.1f;
             player.X += player.vX;
             player.Y += player.vY;
+
+            player.X = Math.Clamp(player.X, 15, pbMain.Width - 15);
+            player.Y = Math.Clamp(player.Y, 15, pbMain.Height - 15);
         }
 
         private void pbMain_MouseClick(object sender, MouseEventArgs e)
@@ -86,9 +125,25 @@ namespace events
                 objects.Add(marker);
             }
             marker.X = e.X;
-            marker.Y=e.Y;
+            marker.Y = e.Y;
         }
 
-       
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pbMain_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void coutdownTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (var circle in greenCircles)
+            {
+                circle.DecreaseTime();
+            }
+        }
     }
 }

@@ -32,6 +32,8 @@
             pbMain = new PictureBox();
             timer1 = new System.Windows.Forms.Timer(components);
             txtLog = new RichTextBox();
+            lblScore = new Label();
+            coutdownTimer = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)pbMain).BeginInit();
             SuspendLayout();
             // 
@@ -39,9 +41,10 @@
             // 
             pbMain.Location = new Point(2, 12);
             pbMain.Name = "pbMain";
-            pbMain.Size = new Size(666, 495);
+            pbMain.Size = new Size(597, 325);
             pbMain.TabIndex = 0;
             pbMain.TabStop = false;
+            pbMain.Click += pbMain_Click;
             pbMain.Paint += pbMain_paint;
             pbMain.MouseClick += pbMain_MouseClick;
             // 
@@ -53,23 +56,41 @@
             // 
             // txtLog
             // 
-            txtLog.Location = new Point(674, 12);
+            txtLog.Location = new Point(605, 12);
             txtLog.Name = "txtLog";
-            txtLog.Size = new Size(185, 495);
+            txtLog.Size = new Size(168, 325);
             txtLog.TabIndex = 1;
             txtLog.Text = "";
+            // 
+            // lblScore
+            // 
+            lblScore.AutoSize = true;
+            lblScore.Location = new Point(510, 22);
+            lblScore.Name = "lblScore";
+            lblScore.Size = new Size(51, 20);
+            lblScore.TabIndex = 2;
+            lblScore.Text = "Очки: ";
+            lblScore.Click += label1_Click;
+            // 
+            // coutdownTimer
+            // 
+            coutdownTimer.Enabled = true;
+            coutdownTimer.Interval = 60;
+            coutdownTimer.Tick += coutdownTimer_Tick;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(860, 519);
+            ClientSize = new Size(780, 355);
+            Controls.Add(lblScore);
             Controls.Add(txtLog);
             Controls.Add(pbMain);
             Name = "Form1";
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)pbMain).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -77,5 +98,7 @@
         private PictureBox pbMain;
         private System.Windows.Forms.Timer timer1;
         private RichTextBox txtLog;
+        private Label lblScore;
+        private System.Windows.Forms.Timer coutdownTimer;
     }
 }
